@@ -2,11 +2,41 @@ package deepdive.cnm.edu.kotlintestapp
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.SeekBar
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    val initialTextViewTranslationY = text_progress.translationY
+
+    seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+      override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        text_progress.text = progress.toString()
+
+        val translateDistance = (initialTextViewTranslationY +
+                progress * resources.getDimension(R.dimen.text_anim_step) * -1)
+
+        text_progress.animate().translationY(translateDistance)
+
+        if (!fromUser)
+          text_progress.animate().setDuration(500).rotationBy(360f).
+                  translationY(initialTextViewTranslationY)
+      }
+
+      override fun onStartTrackingTouch(seekBar: SeekBar?) {
+      }
+
+      override fun onStopTrackingTouch(seekBar: SeekBar?) {
+      }
+
+    })
+
+    button_reset.setOnClickListener { v ->
+      seekBar.progress = 0
+
     }
+  }
 }
